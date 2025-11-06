@@ -7,9 +7,18 @@ on:
 
 jobs:
   myjob:
-    runs-on: self-hosted
+    runs-on: 'ubuntu-latest'
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: dotnet version
+      uses: actions/setup-dotnet@v4 
+      with:
+        dotnet-version: "9.0.100"
     - name: this is my dotnet publish command
       run: dotnet publish -c Release src/Presentation/Nop.Web/Nop.Web.csproj -o demo
