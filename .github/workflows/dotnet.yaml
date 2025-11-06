@@ -7,9 +7,9 @@ on:
 
 jobs:
   myjob:
-  runs-on: self-hosted
-  steps:
-  - name: Checkout repository
-    uses: actions/checkout@v5
-  - name: this is my dotnet publish command
-    run: dotnet publish -c Release src/Presentation/Nop.Web/Nop.Web.csproj -o demo
+    runs-on: self-hosted
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+    - name: this is my dotnet publish command
+      run: dotnet publish -c Release src/Presentation/Nop.Web/Nop.Web.csproj -o demo
