@@ -11,19 +11,14 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
-    - name: SonarQube Scan
-      uses: SonarSource/sonarqube-scan-action@v6
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: https://sonarcloud.io
-      with:
-        projectBaseDir: .
-        args: >
-          -Dsonar.projectKey=manoj723529_nopCommerce
-          -Dsonar.organization=manoj723529
-    - name: dotnet version
-      uses: actions/setup-dotnet@v4 
-      with:
-        dotnet-version: "9.0.100"
     - name: this is my dotnet publish command
       run: dotnet publish -c Release src/Presentation/Nop.Web/Nop.Web.csproj -o demo
+    - name: SonarQube Scan
+      uses: SonarSource/sonarcloud-github-action@v3
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      with:
+          args: >
+            -Dsonar.organization=manoj723529
+            -Dsonar.projectKey=manoj723529_nopCommerce
