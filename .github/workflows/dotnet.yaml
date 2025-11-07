@@ -44,4 +44,16 @@ jobs:
         docker build -t dev/nop .
         docker tag dev/nop:latest 772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest
         docker push 772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest
-      
+        - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@v0.28.0
+      with:
+        image-ref: '772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest'
+        format: 'table'           
+        output: 'trivy-results.xml'
+        exit-code: '1'          
+        ignore-unfixed: true   
+        severity: 'CRITICAL,HIGH' 
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: eu-north-1
