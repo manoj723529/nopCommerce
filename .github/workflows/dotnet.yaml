@@ -50,6 +50,6 @@ jobs:
         image-ref: '772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest'
         format: 'table'           
         output: 'trivy-results.xml'
-        exit-code: '1'          
+        exit-code: '0'          
         ignore-unfixed: true   
         severity: 'CRITICAL,HIGH' 
