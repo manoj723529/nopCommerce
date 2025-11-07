@@ -44,7 +44,7 @@ jobs:
         docker build -t dev/nop .
         docker tag dev/nop:latest 772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest
         docker push 772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest
-        - name: Run Trivy vulnerability scanner
+    - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@v0.28.0
       with:
         image-ref: '772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest'
