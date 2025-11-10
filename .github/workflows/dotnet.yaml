@@ -22,7 +22,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
-          args: >
+          args: >   # >   multiple values
             -Dsonar.organization=manoj723529
             -Dsonar.projectKey=manoj723529_nopCommerce
             -Dsonar.host.url=https://sonarcloud.io
@@ -31,7 +31,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-north-1
+        aws-region: ${{ secrets.AWS_REGION }}
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
@@ -40,7 +40,7 @@ jobs:
         ECR_REGISTRY: aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 772217230642.dkr.ecr.eu-north-1.amazonaws.com
         ECR_REPOSITORY: dev/nop
         IMAGE_TAG: latest
-      run: |
+      run: |    # | multiple values
         docker build -t dev/nop .
         docker tag dev/nop:latest 772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest
         docker push 772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest
@@ -52,4 +52,14 @@ jobs:
         output: 'trivy-results.xml'
         exit-code: '0'          
         ignore-unfixed: true   
-        severity: 'CRITICAL,HIGH' 
+        severity: 'CRITICAL,HIGH'
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+    - name: Update Kubernetes manifest
+      run: |
+        sed -i "s|772217230642.dkr.ecr.eu-north-1.amazonaws.com/dev/nop:latest|$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|" kubernetes/deployment.yaml
+    - name: Deploy to EKS
+      run: |
+        kubectl apply -f kubernetes/deployment.yaml
+        kubectl apply -f kubernetes/service.yaml
